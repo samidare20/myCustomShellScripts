@@ -112,15 +112,17 @@ else
 fi
 
 # Prepare previous value for this path (if any)
+LAST_LINE=""
 if [[ -f "$LOG_FILE" ]]; then
-  LAST_LINE=$(awk -v p="$PWD" -F ' - ' '$1==p{last=$0} END{print last}' "$LOG_FILE")
-else
-  LAST_LINE=""
+  # Optimization: Use grep and tail to quickly find the last entry for this path
+  LAST_LINE=$(grep -F "$PWD - " "$LOG_FILE" | tail -n 1 || true)
 fi
 
 PREV_NUM=""
+PREV_VAL=""
 if [[ -n "${LAST_LINE}" ]]; then
-  PREV_VAL=$(printf '%s\n' "$LAST_LINE" | awk -F ' - ' '{print $3}')
+  # Robust parsing using awk on the single line
+  PREV_VAL=$(printf '%s' "$LAST_LINE" | awk -F ' - ' '{print $3}')
   if [[ "$PREV_VAL" == "Empty" ]]; then
     PREV_NUM=0
   else
@@ -129,38 +131,28 @@ if [[ -n "${LAST_LINE}" ]]; then
 fi
 
 # Compute diff versus previous
-if [[ -n "${PREV_NUM}" ]]; then
-  DIFF_NUM=$(( COUNT - PREV_NUM ))
-else
-  DIFF_NUM=$COUNT
-fi
+DIFF_NUM=$(( COUNT - (PREV_NUM:-0) ))
 if (( DIFF_NUM >= 0 )); then
   DIFF_STR="+${DIFF_NUM}"
 else
-  DIFF_STR="-$((-DIFF_NUM))"
+  DIFF_STR="${DIFF_NUM}"
 fi
 
 LINE_OUTPUT_RAW="$PWD - $TIMESTAMP - $RESULT_VALUE - $DIFF_STR"
 
-# When printing to terminal, colorize: path bold-cyan, timestamp green, value green or yellow (Empty)
+# When printing to terminal, colorize
 if [[ -t 1 && -n "$COLOR_RESET" ]]; then
   if [[ "$RESULT_VALUE" == "Empty" ]]; then
     VALUE_COLOR="$COLOR_YELLOW"
   else
-    VALUE_COLOR="$COLOR_GREEN"
-    if [[ -n "${PREV_NUM}" ]]; then
-      if (( COUNT < PREV_NUM )); then
-        VALUE_COLOR="$COLOR_RED"
-      else
-        VALUE_COLOR="$COLOR_GREEN"
-      fi
+    if [[ -n "${PREV_NUM}" && COUNT -lt PREV_NUM ]]; then
+      VALUE_COLOR="$COLOR_RED"
+    else
+      VALUE_COLOR="$COLOR_GREEN"
     fi
   fi
-  if (( DIFF_NUM >= 0 )); then
-    DIFF_COLOR="$COLOR_GREEN"
-  else
-    DIFF_COLOR="$COLOR_RED"
-  fi
+  DIFF_COLOR=$(( DIFF_NUM >= 0 ? COLOR_GREEN : COLOR_RED ))
+  
   LINE_OUTPUT_COLORED=$(printf "%b%b%s%b - %b%s%b - %b%s%b (%b%s%b)" \
     "$COLOR_BOLD" "$COLOR_CYAN" "$PWD" "$COLOR_RESET" \
     "$COLOR_GREEN" "$TIMESTAMP" "$COLOR_RESET" \
@@ -171,16 +163,21 @@ else
 fi
 
 if [[ -n "${LAST_LINE}" ]]; then
-  LAST_VALUE=$(printf '%s\n' "$LAST_LINE" | awk -F ' - ' '{print $3}')
-  if [[ "$LAST_VALUE" == "$RESULT_VALUE" ]]; then
-    # Find line number of the last occurrence for this path and replace it with the new timestamp
+  if [[ "$PREV_VAL" == "$RESULT_VALUE" ]]; then
+    # Use a safer way to replace the last line for this path
+    # Find the line number first
     LINE_NO=$(awk -v p="$PWD" -F ' - ' '$1==p{n=NR} END{print n+0}' "$LOG_FILE")
-    awk -v ln="$LINE_NO" -v nl="$LINE_OUTPUT_RAW" 'NR==ln{print nl; next} {print $0}' "$LOG_FILE" >"$LOG_FILE.tmp"
-    mv "$LOG_FILE.tmp" "$LOG_FILE"
+    if [[ $LINE_NO -gt 0 ]]; then
+      awk -v ln="$LINE_NO" -v nl="$LINE_OUTPUT_RAW" 'NR==ln{print nl; next} {print $0}' "$LOG_FILE" > "$LOG_FILE.tmp" && mv "$LOG_FILE.tmp" "$LOG_FILE"
+    else
+      printf '%s\n' "$LINE_OUTPUT_RAW" >> "$LOG_FILE"
+    fi
     printf '%b\n' "$LINE_OUTPUT_COLORED"
     exit 0
   fi
 fi
+
+
 
 # Append to log file if not updated
 printf '%s\n' "$LINE_OUTPUT_RAW" >>"$LOG_FILE"

@@ -35,10 +35,13 @@ ZSHRC="${HOME}/.zshrc"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # 4. Powerlevel10k 설정
+ZSH_CUSTOM="${ZSH_CUSTOM:-${HOME}/.oh-my-zsh/custom}"
+P10K_DIR="${ZSH_CUSTOM}/themes/powerlevel10k"
+
 # 테마 클론 (이미 있으면 스킵)
-if [ ! -d "${HOME}/powerlevel10k" ]; then
+if [ ! -d "$P10K_DIR" ]; then
   echo "⏳ Powerlevel10k 다운로드 중..."
-  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${HOME}/powerlevel10k"
+  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$P10K_DIR"
 fi
 
 # p10k 설정 파일 복사
@@ -49,20 +52,17 @@ if [ -f "${SCRIPT_DIR}/.p10k.zsh" ]; then
   # .zshrc 상단에 p10k 설정 로드 추가 (없을 때만)
   P10K_INST="[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh"
   if ! grep -q "p10k.zsh" "$ZSHRC"; then
-    # 파일 맨 앞에 추가하기 위해 임시 파일 사용
     echo "$P10K_INST" | cat - "$ZSHRC" > "${ZSHRC}.tmp" && mv "${ZSHRC}.tmp" "$ZSHRC"
   fi
 fi
 
-# .zshrc에 테마 적용 (ZSH_THEME 설정이 있으면 변경, 없으면 추가)
+# .zshrc에 테마 적용
 if grep -q "^ZSH_THEME=" "$ZSHRC"; then
   sed -i 's/^ZSH_THEME=.*/ZSH_THEME="powerlevel10k\/powerlevel10k"/' "$ZSHRC"
 else
-  # ZSH_THEME 설정이 아예 없으면 source 방식으로 추가 (이미 init.sh 하단에 있는 로직과 겹치지 않게 주의)
-  if ! grep -q "powerlevel10k.zsh-theme" "$ZSHRC"; then
-    echo 'source ~/powerlevel10k/powerlevel10k.zsh-theme' >> "$ZSHRC"
-  fi
+  echo 'ZSH_THEME="powerlevel10k/powerlevel10k"' >> "$ZSHRC"
 fi
+
 
 TARGET="${SCRIPT_DIR}/main.sh"
 

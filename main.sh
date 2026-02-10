@@ -1,37 +1,45 @@
 
+# Detect script directory
 if [ -n "${BASH_SOURCE-}" ]; then
-	__main_file="${BASH_SOURCE[0]}"
+    __main_file="${BASH_SOURCE[0]}"
 elif [ -n "${ZSH_VERSION-}" ]; then
-	__main_file="${(%):-%N}"
+    __main_file="${(%):-%N}"
 else
-	__main_file="$0"
+    __main_file="$0"
 fi
 __main_dir="$(cd "$(dirname "${__main_file}")" 2>/dev/null && pwd)"
+unset __main_file
 
-# Project line counter
+# Project line counter functions
 count-lines() {
-	"${__main_dir}/CountProjectLine.sh" "$@"
+    "${__main_dir}/CountProjectLine.sh" "$@"
 }
 
-# Legacy alias for backward compatibility
+# Alias for backward compatibility
 cpl() {
-	count-lines "$@"
+    count-lines "$@"
 }
 
-# Load KeyBind settings
-if [ -f "${__main_dir}/KeyBind.sh" ]; then
-	source "${__main_dir}/KeyBind.sh"
-fi
-if [ -f "${__main_dir}/aliass.sh" ]; then
-	source "${__main_dir}/aliass.sh"
-fi
-# Display available commands
+# Load sub-scripts if they exist
+for _script in "KeyBind.sh" "aliass.sh"; do
+    if [ -f "${__main_dir}/${_script}" ]; then
+        source "${__main_dir}/${_script}"
+    fi
+done
+unset _script
+
+# Display available commands with colors
 show-commands() {
-	echo "Available commands:"
-	echo "  count-lines [options] - Calculate project line count"
-	echo "    -s, --show          - Show current directory history"
-	echo "  cpl [options]         - Alias for count-lines"
-	echo "  show-commands         - Show this help"
-	echo ""
-	echo "Current directory: ${PWD}"
+    local cyan='\033[36m'
+    local yellow='\033[33m'
+    local reset='\033[0m'
+    local bold='\033[1m'
+
+    printf "${bold}${cyan}Available commands:${reset}\n"
+    printf "  ${yellow}count-lines${reset} [options] - Calculate project line count\n"
+    printf "    -s, --show          - Show current directory history\n"
+    printf "  ${yellow}cpl${reset} [options]         - Alias for count-lines\n"
+    printf "  ${yellow}show-commands${reset}       - Show this help\n"
+    printf "\n"
+    printf "${bold}Current directory:${reset} ${PWD}\n"
 }
