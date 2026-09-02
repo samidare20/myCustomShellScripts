@@ -1,0 +1,9 @@
+# GIMP gimp-path-tool options
+
+(brush "2. Hardness 050")
+(dynamics "Pressure Size")
+(pattern "Pine")
+(gradient "전경색에서 배경색으로(RGB)")
+(palette "Color History")
+
+# end of gimp-path-tool options

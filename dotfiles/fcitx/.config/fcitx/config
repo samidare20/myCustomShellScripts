@@ -1,0 +1,147 @@
+[Hotkey]
+# 트리거 입력기
+TriggerKey= HANGUL
+# 트리거 키를 사용하여 비활성화 한 후에 만 ​​추가 트리거 키 사용
+# Available Value:
+# True False
+#UseExtraTriggerKeyOnlyWhenUseItToInactivate=True
+# 트리거 입력 방법을 위한 추가 키
+# Available Value:
+# R_CTRL
+# R_SHIFT
+# L_SHIFT
+# L_CTRL
+# ALT_L_SHIFT
+# ALT_R_SHIFT
+# CTRL Both
+# SHIFT Both
+# L_ALT
+# R_ALT
+# ALT Both
+# Left Super
+# Right Super
+# Super Both
+# Ctrl+Left Super
+# Ctrl+Right Super
+# Super+Left Ctrl
+# Super+Right Ctrl
+# Disabled
+# Custom
+#SwitchKey=L_SHIFT
+# 사용자 지정 전환 키
+#CustomSwitchKey=
+# 입력기 활성화
+#ActivateKey=
+# 입력기 비활성화
+#InactivateKey=
+# 입력기 사이에 스크롤을 위한 단축키 활성
+# Available Value:
+# True False
+#IMSwitchKey=True
+# 입력기 사이에 스크롤 할 때 비활성화 포함
+# Available Value:
+# True False
+#IMSwitchIncludeInactive=False
+# 입력기 사이에 스크롤
+# Available Value:
+# CTRL_SHIFT
+# ALT_SHIFT
+# CTRL_SUPER
+# ALT_SUPER
+#IMSwitchHotkey=CTRL_SHIFT
+# 구성 다시읽기
+#ReloadConfig=CTRL_5
+# 두 입력 사이의 시간 간격
+#TimeInterval=250
+# 가상 키보드 전환
+#VKSwitchKey=CTRL_ALT_B
+# 다시 알림 모드 전환
+#RemindSwitchKey=
+# 전각 문자 모드 전환
+#FullWidthSwitchKey=
+# 전각 부호 모드 전환
+#PuncSwitchKey=CTRL_.
+# 이전 페이지
+#PrevPageKey=- UP
+# 다음 페이지
+#NextPageKey== DOWN
+# 두 번째 및 세 번째 후보 단어 선택
+#SecondThirdCandWordKey=
+# 모든 구성 및 입력 기록 저장
+#SaveAllKey=CTRL_ALT_S
+# 내장된 사전편집 전환
+#SwitchPreedit=CTRL_ALT_P
+# 이전 후보단어
+#PrevWord=SHIFT_TAB
+# 다음 후보 단어
+#NextWord=TAB
+
+[Program]
+# Fcitx가 실제로 시작하기 전 지연시간(초)
+#DelayStart=0
+# 창 사이의 공유 상태
+# Available Value:
+# No
+# All
+# PerProgram
+#ShareStateAmongWindow=No
+# 기본 입력기 상태
+# Available Value:
+# Inactive
+# Active
+#DefaultInputMethodState=Inactive
+
+[Output]
+# 숫자 뒤에 반각 문장부호 입력
+# Available Value:
+# True False
+#HalfPuncAfterNumber=True
+# 다시 알림 모드에서 페이징 사용 안 함
+# Available Value:
+# True False
+#RemindModeDisablePaging=True
+# 상태가 전환되면 입력완료
+# Available Value:
+# True False
+#SendTextWhenSwitchEng=True
+# 후보 단어 수
+#CandidateWordNumber=5
+# 구문의 팁 주기
+# Available Value:
+# True False
+#PhraseTips=True
+# 창 초점을 해제할때 사전편집 텍스트 입력완료 안함
+# Available Value:
+# True False
+#DontCommitPreeditWhenUnfocus=False
+
+[Appearance]
+# 입력기 변경후 입력기 힌트 표시
+# Available Value:
+# True False
+#ShowInputWindowAfterTriggering=True
+# 입력기 변경, 포커스 전환 후 입력기 힌트 표시
+# Available Value:
+# True False
+#ShowInputWindowWhenFocusIn=False
+# 활성 상태일 때만 입력기 힌트 표시
+# Available Value:
+# True False
+#ShowInputWindowOnlyWhenActive=True
+# 입력 속도 표시
+# Available Value:
+# True False
+#ShowInputSpeed=False
+# 버전 표시
+# Available Value:
+# True False
+#ShowVersion=False
+# 문자열 사전편집만 있는 경우 입력 창 표시 안함
+# Available Value:
+# True False
+#HideInputWindowWhenOnlyPreeditString=False
+# 후보가 하나만 있는 경우 입력 창을 표시하지 않고 사전편집
+# Available Value:
+# True False
+#HideInputWindowWhenOnlyOneCandidate=False
+
