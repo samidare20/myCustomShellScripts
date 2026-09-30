@@ -126,3 +126,15 @@ alias h2="/home/user/programs/h2/bin/h2.sh"
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+. "$HOME/.cargo/env"
+
+
+
+
+
+case "$(tty)" in
+    /dev/tty[0-9]*)
+        export LANG=C.UTF-8
+        export LC_ALL=C.UTF-8
+        ;;
+esac

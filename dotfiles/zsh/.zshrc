@@ -116,3 +116,9 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # opencode
 export PATH=/home/user/.opencode/bin:$PATH
+
+
+source /home/user/programs/emsdk/emsdk_env.sh
+
+source <(fzf --zsh)
+
